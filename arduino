@@ -1,0 +1,106 @@
+int echo_pin_1 = 22;//A1 구간에사용할 초음파센서 아두이노 22,23번핀 사용
+int trig_pin_1 = 23;
+unsigned long duration_1;
+float distance_1;//A1 초음파센서값 저장변수
+
+int echo_pin_2 = 24;//A2 구간에사용할 초음파센서 아두이노 24,25번핀 사용
+int trig_pin_2 = 25;
+unsigned long duration_2;
+float distance_2;//A2 초음파센서값 저장변수
+
+int echo_pin_3 = 26;//A3 구간에사용할 초음파센서 아두이노 26,27번핀 사용
+int trig_pin_3 = 27;
+unsigned long duration_3;
+float distance_3;//A3 초음파센서값 저장변수
+
+int echo_pin_4 = 28;//A4 구간에사용할 초음파센서 아두이노 28,29번핀 사용
+int trig_pin_4 = 29;
+unsigned long duration_4;
+float distance_4;//A4 초음파센서값 저장변수
+
+String a1_value = "";
+String a2_value = "";
+String a3_value = "";
+String a4_value = "";
+
+
+
+void setup () {
+  Serial.begin (9600);
+  Serial3.begin(9600);
+
+  pinMode(echo_pin_1, INPUT);
+  pinMode(trig_pin_1, OUTPUT);
+
+  pinMode(echo_pin_2, INPUT);
+  pinMode(trig_pin_2, OUTPUT);
+
+  pinMode(echo_pin_3, INPUT);
+  pinMode(trig_pin_3, OUTPUT);
+
+  pinMode(echo_pin_4, INPUT);
+  pinMode(trig_pin_4, OUTPUT);
+
+  delay(1000);//1초 휴식
+}
+
+
+
+void loop () {
+
+  digitalWrite(trig_pin_1, HIGH);
+  delay(10);
+  digitalWrite(trig_pin_1, LOW);
+  duration_1 = pulseIn(echo_pin_1, HIGH);
+  distance_1 = ((float)(340 * duration_1) / 10000 ) / 2;//A1 초음파센서값을 최종적으로 distance_1변수에 저장한다
+
+  digitalWrite(trig_pin_2, HIGH);
+  delay(10);
+  digitalWrite(trig_pin_2, LOW);
+  duration_2 = pulseIn(echo_pin_2, HIGH);
+  distance_2 = ((float)(340 * duration_2) / 10000 ) / 2;//A2 초음파센서값을 최종적으로 distance_2변수에 저장한다
+
+  digitalWrite(trig_pin_3, HIGH);
+  delay(10);
+  digitalWrite(trig_pin_3, LOW);
+  duration_3 = pulseIn(echo_pin_3, HIGH);
+  distance_3 = ((float)(340 * duration_3) / 10000 ) / 2;//A3 초음파센서값을 최종적으로 distance_3변수에 저장한다
+
+  digitalWrite(trig_pin_4, HIGH);
+  delay(10);
+  digitalWrite(trig_pin_4, LOW);
+  duration_4 = pulseIn(echo_pin_4, HIGH);
+  distance_4 = ((float)(340 * duration_4) / 10000 ) / 2;//A4 초음파센서값을 최종적으로 distance_4변수에 저장한다
+
+  Serial.print(""); Serial.print(distance_1);
+  Serial.print(" , "); Serial.print(distance_2);
+  Serial.print(" , "); Serial.print(distance_3);
+  Serial.print(" , "); Serial.println(distance_4);//초음파센서값 시리얼모니터 출력
+
+  if (distance_1 < 10) {//A1 초음파센서값이 10보다 작으면
+    a1_value = "X";//a1_value값을 X로
+  } else {//A1 초음파센서값이 10보다 작지않으면
+    a1_value = "O";//a1_value값을 O로
+  }
+  if (distance_2 < 10) {
+    a2_value = "X";
+  } else {
+    a2_value = "O";
+  }
+  if (distance_3 < 10) {
+    a3_value = "X";
+  } else {
+    a3_value = "O";
+  }
+  if (distance_4 < 10) {
+    a4_value = "X";
+  } else {
+    a4_value = "O";
+  }
+
+  //send_data변수에 주차가능여부 데이터를 담아서 보낸다
+  String send_data = a1_value + a2_value + a3_value + a4_value;
+  Serial3.println(send_data);
+
+  delay(1000);//1초 휴식
+}
